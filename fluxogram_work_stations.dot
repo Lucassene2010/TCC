@@ -1,0 +1,97 @@
+digraph G 
+{
+    "Not_active" 
+    [
+        label = "<f0> State event: Not active |<f1> State type: NOT ACTIVE |<f2> ID: 10000 "
+        shape = "record"
+    ];
+
+    "Part_in" 
+    [
+        label = "<f0> State event: Part in |<f1> State type: PART IN |<f2> ID: 1121 "
+        shape = "record"
+    ];
+
+    "Part_out" 
+    [
+        label = "<f0> State event: Part out |<f1> State type: PART OUT |<f2> ID: 1122 "
+        shape = "record"
+    ];
+
+    "Not_active_alarm_observed" 
+    [
+        label = "<f0> State event: Not active alarm observed |<f1> State type: ERROR |<f2> ID: 20200 "
+        shape = "record"
+    ];
+
+    "Producing" 
+    [
+        label = "<f0> State event: Producing |<f1> State type: PRODUCING |<f2> ID: 30100 "
+        shape = "record"
+    ];
+
+    "Wait" 
+    [
+        label = "<f0> State event: Wait |<f1> State type: WAITING |<f2> ID: 31100 "
+        shape = "record"
+    ];
+
+    "Wait_starved" 
+    [
+        label = "<f0> State event: Wait starved |<f1> State type: WAITING |<f2> ID: 31101 "
+        shape = "record"
+    ];
+
+    "Wait_blocked" 
+    [
+        label = "<f0> State event: Wait blocked |<f1> State type: WAITING |<f2> ID: 31102 "
+        shape = "record"
+    ];
+
+    "Part_changing" 
+    [
+        label = "<f0> State event: Part changing |<f1> State type: PART CHANGING |<f2> ID: 32100 "
+        shape = "record"
+    ];
+
+    "Comlink_up" 
+    [
+        label = "<f0> State event: Comlink up |<f1> State type: COMLINK UP |<f2> ID: 9003 "
+        shape = "record"
+    ];
+
+    "Comlink_down" 
+    [
+        label = "<f0> State event: Comlink down |<f1> State type: COMLINK DOWN |<f2> ID: 9004 "
+        shape = "record"
+    ];
+
+    "Shift_start" 
+    [
+        label = "<f0> State event: Shift start |<f1> State type: CALENDAR |<f2> ID: 9090 "
+        shape = "record"
+    ];
+
+    "Planned_stop_start" 
+    [
+        label = "<f0> State event: Planned stop start |<f1> State type: CALENDAR |<f2> ID: 9091 "
+        shape = "record"
+    ];
+
+    "Planned_stop_end" 
+    [
+        label = "<f0> State event: Planned stop end |<f1> State type: CALENDAR |<f2> ID: 9092 "
+        shape = "record"
+    ];
+
+    "Shift_end" 
+    [
+        label = "<f0> State event: Shift end |<f1> State type: CALENDAR |<f2> ID: 9093 "
+        shape = "record"
+    ];
+
+    InMessageDB[shape=cylinder,label="Entrance queue\n"]
+    InMessageDB[shape=cylinder,label="Exit queue"]
+
+
+}

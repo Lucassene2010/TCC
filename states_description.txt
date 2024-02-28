@@ -1,0 +1,30 @@
+Station 1
+
+1) Estação 16 estados: 
+
+ID:        descrição do estado:               tipo do estado:
+
+10200      Not active, alarm observed         ERROR
+10000      Not active                         NOT ACTIVE
+1121       Part in                            PART IN
+1122       Part out                           PART OUT
+20200      Not active, alarm observed         ERROR
+30100      Producing                          PRODUCING
+31100      Wait                               WAITING
+31101      Wait starved                       WAITING
+31102	   Wait blocked                       WAITING
+32100      Part changing                      PART CHANGING
+9003       Comlink up                         COMLINK UP
+9004       Comlink down                       COMLINK DOWN
+9090       Shift start                        CALENDAR
+9091       Planned stop start                 CALENDAR
+9092       Planned stop end                   CALENDAR
+9093	   Shift end			              CALENDAR
+
+Shift start -> Wait Blocked | Wait starved -> Part changing -> Part out ->
+
+
+
+
+
+

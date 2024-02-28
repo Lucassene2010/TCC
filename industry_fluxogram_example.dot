@@ -1,0 +1,130 @@
+digraph G 
+{
+  //ranksep=1.5;   // Espaçamento entre níveis de clusters
+  //nodesep=0.1;   // Espaçamento entre nós dentro dos cluster
+
+  subgraph Industria_Genérica_box
+  {
+    graph [
+    rankdir=LR
+    //nodesep=1.5
+    ranksep=1.2    // magically, tweaking ranksep changed A4->B$, yea!!
+    //ranksep=1.0  // magic is ALL gone, boo
+   ]
+    start [shape=Mdiamond, width=1, height=1, fontsize=32];
+    end [shape=Msquare, width=1, height=1, fontsize=32];
+    //subgraph cluster_projeto
+    //{
+      //label = "Projeto";
+      //fontsize=32;
+      //width=2.0;
+      //height=2.0;
+      
+      pr_EsbProj[label="Projeto:\nEsboçar projeto"];
+      pr_ModProj[label="Projeto:\nModelar projeto"];
+      pr_ProjApr[label="Projeto:\nProjeto aprovado ?",shape=diamond];
+      pr_AltProj[label="Projeto:\nAlterar"]
+      pr_EmLiMat[label="Projeto:\nEmitir Lista de Material a manufaturar"]
+      pr_DesProj[label="Projeto:\nDesenvolver projeto draw/build"]
+      pr_NecMais[label="Projeto:\nNecessita de mais materiais ?",shape=diamond]
+      pr_EmLiMai[label="Projeto:\nEmitir Lista"]
+
+      pr_ModProj->pr_ProjApr;
+      pr_ProjApr->pr_AltProj[label="Não"];
+      pr_AltProj->pr_ModProj
+      pr_ProjApr->pr_EmLiMat[label="Sim"];
+      pr_EmLiMat->pr_DesProj;
+      pr_DesProj->pr_NecMais;
+      pr_NecMais->pr_EmLiMai[label="Sim"];
+    //}
+    
+    //subgraph cluster_planejamento 
+    //{
+      //label = "Planejamento";
+      //fontsize=32;
+      //width=2.0;
+      //height=2.0;
+
+      pl_RecDemPr[label="Planejamento:\nRequisição de produção"];
+      pl_MonPlaAc[label="Planejamento:\nMontar plano de ação"];
+      pl_ElaOrc  [label="Planejamento:\nElaborar orçamento"];
+      pl_OrcApr  [label="Planejamento:\nOrçamento aprovado?",shape=diamond];
+      pl_Arqui   [label="Planejamento:\nArquivar"];
+      pl_Fin1    [label="Planejamento:\nFinal"];
+
+      pl_ComMat  [label="Planejamento:\nComprar material"];
+      pl_PlaPrFa [label="Planejamento:\nPlanejar processo de fabricação"];
+
+      pl_EmiFat  [label="Planejamento:\nEmitir faturamento"];
+      pl_Fin2    [label="Planejamento:\nFinal"];
+
+
+      pl_RecDemPr->pl_MonPlaAc
+      pl_ElaOrc->pl_OrcApr
+      pl_OrcApr->pl_Arqui[label="Não"];
+      pl_Arqui->pl_Fin1
+
+      pl_ComMat->pl_PlaPrFa
+
+      pl_EmiFat->pl_Fin2
+   // }
+    
+    //subgraph cluster_manufatura
+   // {
+      //label = "Manufatura";
+      //fontsize=32;
+      //width=2.0;
+      //height=2.0;
+      
+      Ma_VeriDocu[label="Manufature:\nVerificar Documentação"];
+      Ma_VeriMatp[label="Manufature:\nVerificar Matéria prima"];
+      Ma_VeriProc[label="Manufature:\nVerificar Processos produtivos"];
+      Ma_MeiProAp[label="Manufature:\nMeio de produção aprovado ?",shape=diamond];
+      Ma_ReaManuf[label="Manufature:\nRealiza manufatura"];
+      Ma_ExecTryo[label="Manufature:\nExecutar TRY-OUT"];
+      Ma_TryoApro[label="Manufature:\nTRY-OUT aprovado ?",shape=diamond];
+
+      Ma_VeriDocu->Ma_VeriMatp;
+      Ma_VeriMatp->Ma_VeriProc;
+      Ma_VeriProc->Ma_MeiProAp;
+      Ma_MeiProAp->Ma_ReaManuf[label="Sim"];
+      Ma_ReaManuf->Ma_ExecTryo;
+      Ma_ExecTryo->Ma_TryoApro;
+   // }
+    
+   // subgraph cluster_qualidade 
+   // {
+      //label = "Qualidade";
+      //fontsize=32;
+     // width=20;
+      //height=20;
+
+      qu_VaRePr[label="Qualidade:\nValidar Requisitos do Produto"];
+      qu_VaSoRe[label="Qualidade:\nalidar produto sob os requisitos"];
+      qu_Aprove[label="Qualidade:\nprovado?",shape=diamond];
+
+      qu_VaRePr->qu_VaSoRe
+      qu_VaSoRe->qu_Aprove
+//    }
+
+    pl_MonPlaAc->pr_EsbProj
+    pl_OrcApr->pr_ModProj[label="Sim"];
+    pl_PlaPrFa->Ma_VeriDocu
+    
+    pr_EsbProj->pl_ElaOrc
+    pr_EmLiMai->pl_ComMat
+    pr_EmLiMat->pl_ComMat
+    pr_NecMais->pl_PlaPrFa[label="Não"];
+
+    Ma_MeiProAp->pl_PlaPrFa[label="Não"]
+    Ma_TryoApro->pl_PlaPrFa[label="Não"]
+    Ma_TryoApro->qu_VaRePr[label="Sim"]
+
+    qu_Aprove->pl_EmiFat[label="Sim"]
+    qu_Aprove->pl_PlaPrFa[label="Não"]
+
+    start->pl_RecDemPr
+    pl_Fin2->end
+
+  }
+}
