@@ -10,6 +10,7 @@ Email: lucassene2010@gmail.com
 from libs import log
 import libs as DEF
 import treatmentData as t
+import processMining as p
 
 # Store list about the DataFrames from data base
 DataFrames = []
@@ -19,6 +20,7 @@ def main():
 
     try:
         t.TreatmentDataFromSheets(DataFrames)
+        #p.ProcessMining()
 
     except Exception as _e:
         log.error(str(_e))

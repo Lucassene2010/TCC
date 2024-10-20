@@ -30,7 +30,7 @@ def __SelectedDataFrameFiles(DataFrames):
     while True:
         _i += 1
         _controlInput = input("inputing ENTER key to select a spreadsheet" + 
-                              _i + "and texting 'end' to finish: ")
+                              str(_i) + "and texting 'end' to finish: ")
         if('end' != _controlInput):
             _file = __OpenFileExplorer()
             if not _file:
@@ -41,19 +41,43 @@ def __SelectedDataFrameFiles(DataFrames):
         else:
             return
 
+# Função para converter o formato de data
+def __data_format_converter(data):
+    return pd.to_datetime(data, format='%d/%m/%Y %H:%M:%S').strftime('%m/%d/%Y %H:%M:%S')
+
+def __ConvertExcelToTxt(txt_file_path):
+    df = pd.read_excel(DEF.NEW_SPREADSHEET_NAME + '.xlsx')
+
+    # Selecionar as colunas necessárias e salvar no formato .txt
+    df[['ID da frequência', 'Timestamp', 'descrição Estado']].to_csv(
+        txt_file_path, sep=',', index=False, header=['case_id', 'timestamp', 'activity']
+    )
+    log.info(f"Log saved as {txt_file_path}")
+
 def __AppendDataFrame(DataFrames):
-    
+
     if DataFrames:
         try:
             _df_concatenated = pd.concat(DataFrames)
             _sort_filter_by_ = input("texting the columm name from timestamp: ")
             _df_concatenated_order = _df_concatenated.sort_values(by=_sort_filter_by_)
             log.info("spreadsheet in order and concatenated.")
-            #log.debug(_df_concatenated_order)
 
             # Saving the new dataframe in new spreadsheet
             _df_concatenated_order.to_excel(DEF.NEW_SPREADSHEET_NAME + '.xlsx', index=False)
             log.debug(f"spreadsheet '{DEF.NEW_SPREADSHEET_NAME}.xlsx' created with sucess.")
+
+            # Aplicar a função para criar a nova coluna 'Timestamp'
+            df = pd.read_excel(DEF.NEW_SPREADSHEET_NAME + '.xlsx')  
+            
+            # Altere o nome do arquivo conforme necessário
+            df['Timestamp'] = df['Horário do servidor'].apply(__data_format_converter)
+
+            # Preencher células vazias na coluna 'ID da frequência' com a próxima célula preenchida
+            df['ID da frequência'] = df['ID da frequência'].bfill()
+
+            # Salvar a planilha com as alterações
+            df.to_excel(DEF.NEW_SPREADSHEET_NAME + '.xlsx', index=False)
         
         except Exception as _e:
             log.error(str(_e))
