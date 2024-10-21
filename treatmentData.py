@@ -14,44 +14,46 @@ from libs import pd
 from libs import log
 import libs as DEF
 
-# Private functions
-
-## 
-# @brief Opens a file explorer for the user to select a spreadsheet.
-# @return The selected file path.
+##
+# @brief Opens a file explorer for the user to select one or more spreadsheets.
+# @return A list of selected file paths.
 #
 def __OpenFileExplorer():
     _root = tk.Tk()
-    _root.withdraw()
+    _root.withdraw()  # Hide the Tkinter root window
 
-    _fileSelected = filedialog.askopenfilename()  # File name selected by the user
-    if _fileSelected:
-        log.info(f"Spreadsheet selected: {_fileSelected}")
+    # Let the user select multiple files
+    _filesSelected = filedialog.askopenfilenames(
+        title="Select Excel files",
+        filetypes=[("Excel files", "*.xlsx *.xls")]
+    )
+
+    if _filesSelected:
+        log.info(f"Spreadsheets selected: {_filesSelected}")
     else:
-        log.debug("No spreadsheet selected.")
+        log.debug("No spreadsheets selected.")
     
-    return _fileSelected
+    return _filesSelected  # Return a tuple of file paths
 
 ##
-# @brief Prompts the user to select multiple spreadsheets until they input 'end'.
+# @brief Prompts the user to select multiple spreadsheets and appends them to DataFrames.
 # @param DataFrames A list to store the selected dataframes.
 #
 def __SelectedDataFrameFiles(DataFrames):
-    _i = 0
-    while True:
-        _i += 1
-        _controlInput = input(f"Press ENTER to select spreadsheet {_i} or type 'end' to finish: ")
-        if _controlInput != 'end':
-            _file = __OpenFileExplorer()
-            if _file:
-                _df = pd.read_excel(_file)  # Read the selected spreadsheet
+    # Call the file explorer to select multiple files
+    _files = __OpenFileExplorer()
+    
+    if _files:
+        for _file in _files:
+            try:
+                _df = pd.read_excel(_file)  # Read each selected spreadsheet
                 DataFrames.append(_df)  # Append the dataframe to the list
-                log.info(f"Spreadsheet {_i} loaded and added to DataFrames list.")
-            else:
-                log.debug(f"Spreadsheet {_i} selection was skipped.")
-        else:
-            log.info(f"Spreadsheet selection process ended after {_i-1} files.")
-            return
+                log.info(f"Spreadsheet '{_file}' loaded and added to DataFrames list.")
+            except Exception as e:
+                log.error(f"Failed to load spreadsheet '{_file}': {str(e)}")
+    else:
+        log.debug("No spreadsheets were selected.")
+
 
 ##
 # @brief Converts date format from dd/mm/yyyy HH:MM:SS to mm/dd/yyyy HH:MM:SS.
@@ -86,7 +88,7 @@ def __AppendDataFrame(DataFrames):
             log.debug(f"DataFrames concatenated. Number of rows: {_df_concatenated.shape[0]}")
             
             # User input for the column name containing the timestamps
-            _sort_filter_by_ = input("Enter the column name for timestamp: ")
+            _sort_filter_by_ = DEF.TIMESTAMP_COLUMM_NAME
             log.debug(f"Sorting dataframe by column: {_sort_filter_by_}")
             
             # Sort concatenated dataframe by the timestamp column

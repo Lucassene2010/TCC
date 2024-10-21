@@ -9,10 +9,13 @@ from pm4py.objects.conversion.log import converter as log_converter  # Converts 
 from pm4py.algo.discovery.alpha import algorithm as alpha_miner  # Alpha miner for process discovery
 
 # Script version
-VERSION_SCRIPT = "v0.0.0.3"
+VERSION_SCRIPT = "v0.0.0.4"
 
 # Configure logging to display information messages
 log.basicConfig(level=log.INFO)
 
 # Constant for naming the new spreadsheet after concatenation and sorting
 NEW_SPREADSHEET_NAME = "concAndSortDataFrame"
+
+# Constant of the timestamp columm name from excel
+TIMESTAMP_COLUMM_NAME = "Horário do servidor" 
