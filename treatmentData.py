@@ -101,9 +101,16 @@ def __AppendDataFrame(DataFrames):
             df['Timestamp'] = df['Horário do servidor'].apply(__data_format_converter)
             log.debug("Timestamp column created with correct format.")
 
-            # Fill blank cells in the 'ID da frequência' column with the value from the next valid cell
-            df['ID da frequência'] = df['ID da frequência'].bfill()
-            log.debug("'ID da frequência' column backfilled.")
+            # Fill empty cells in 'ID da frequência' with corresponding values from 'Identificação do erro'
+            df['ID da frequência'] = df['ID da frequência'].fillna(
+                df['Identificação do erro']
+            )
+            log.debug("'ID da frequência' column filled with values from 'Identificação do erro' where empty.")
+
+            # Fill blank cells in the 'ID da frequência' column with the next valid cell's value, 
+            # and if no next value exists, use the previous valid cell's value.
+            df['ID da frequência'] = df['ID da frequência'].bfill().ffill()
+            log.debug("'ID da frequência' column backfilled with next valid cell and forward-filled where necessary.")
 
             # Save the spreadsheet with the updated data
             df.to_excel(DEF.NEW_SPREADSHEET_NAME + '.xlsx', index=False)
