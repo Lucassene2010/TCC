@@ -1,9 +1,8 @@
 """
-processing data from an industry that has two workstations. 
-This script is intended to refine the data for process mining.
-for the TCC1 discipline.
+Processing data from an industry that has two workstations. 
+This script is intended to refine the data for process mining for the TCC1 discipline.
 
-Creator: lucas.gomes
+Creator: Lucas Gomes
 Email: lucassene2010@gmail.com 
 """
 
@@ -40,7 +39,6 @@ def __OpenFileExplorer():
 # @param DataFrames A list to store the selected dataframes.
 #
 def __SelectedDataFrameFiles(DataFrames):
-    # Call the file explorer to select multiple files
     _files = __OpenFileExplorer()
     
     if _files:
@@ -54,27 +52,17 @@ def __SelectedDataFrameFiles(DataFrames):
     else:
         log.debug("No spreadsheets were selected.")
 
-
 ##
 # @brief Converts date format from dd/mm/yyyy HH:MM:SS to mm/dd/yyyy HH:MM:SS.
 # @param data The date string to convert.
 # @return The converted date string.
 #
 def __data_format_converter(data):
-    return pd.to_datetime(data, format='%d/%m/%Y %H:%M:%S').strftime('%m/%d/%Y %H:%M:%S')
-
-##
-# @brief Converts the spreadsheet to a .txt file with specific columns.
-# @param txt_file_path The path where the .txt file will be saved.
-#
-def __ConvertExcelToTxt(txt_file_path):
-    df = pd.read_excel(DEF.NEW_SPREADSHEET_NAME + '.xlsx')
-
-    # Select necessary columns and save as .txt
-    df[['ID da frequência', 'Timestamp', 'descrição Estado']].to_csv(
-        txt_file_path, sep=',', index=False, header=['case_id', 'timestamp', 'activity']
-    )
-    log.info(f"Log saved as {txt_file_path}")
+    try:
+        return pd.to_datetime(data, format='%d/%m/%Y %H:%M:%S').strftime('%m/%d/%Y %H:%M:%S')
+    except Exception as e:
+        log.error(f"Error converting date format: {e}")
+        return data  # Return original data if conversion fails
 
 ##
 # @brief Concatenates and processes multiple dataframes, applying sorting, timestamp formatting, and filling missing case IDs.
@@ -94,6 +82,13 @@ def __AppendDataFrame(DataFrames):
             # Sort concatenated dataframe by the timestamp column
             _df_concatenated_order = _df_concatenated.sort_values(by=_sort_filter_by_)
             log.info("Spreadsheet ordered by timestamp and concatenated.")
+
+            # Add station information to 'descrição Estado' column
+            _df_concatenated_order['descrição Estado'] = _df_concatenated_order.apply(
+                lambda row: f"{row['descrição Estado']} Station {row['Recurso'][-1]}" if pd.notnull(row['Recurso']) else row['descrição Estado'],
+                axis=1
+            )
+            log.debug("'descrição Estado' column updated with station information.")
 
             # Saving the new dataframe to a new spreadsheet
             _df_concatenated_order.to_excel(DEF.NEW_SPREADSHEET_NAME + '.xlsx', index=False)
